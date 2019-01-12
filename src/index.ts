@@ -1,10 +1,14 @@
 import "reflect-metadata";
-import { ApolloServer } from "apollo-server-express";
 import Express from "express";
+import session from "express-session";
+import connectRedis from "connect-redis";
+import cors from "cors";
+import { ApolloServer } from "apollo-server-express";
 import { createConnection } from "typeorm";
 import { buildSchema, formatArgumentValidationError } from "type-graphql";
+import { redis } from "./redis";
+
 import { RegisterResolver } from "./modules/user/Register";
-// import * as resolvers from "./modules";
 
 const startServer = async () => {
   await createConnection();
@@ -15,10 +19,37 @@ const startServer = async () => {
 
   const apolloServer = new ApolloServer({
     schema,
-    formatError: formatArgumentValidationError
+    formatError: formatArgumentValidationError,
+    context: ({ req }: any) => ({ req })
   });
 
   const app = Express();
+
+  const RedisStore = connectRedis(session);
+
+  app.use(
+    cors({
+      credentials: true,
+      origin: "http://localhost:3000"
+    })
+  );
+
+  app.use(
+    session({
+      store: new RedisStore({
+        client: redis as any
+      }),
+      name: "qid",
+      secret: "asdfghrtywqe",
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 1000 * 60 * 60 * 24 * 7 * 365 // 7 years
+      }
+    })
+  );
 
   apolloServer.applyMiddleware({ app });
 

@@ -6,6 +6,8 @@
     "moduleResolution": "node",
     "outDir": "./build",
     "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "sourceMap": true
   }

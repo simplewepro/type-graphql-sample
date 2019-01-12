@@ -1,25 +1,39 @@
-import * as bcrypt from "bcryptjs";
-import { ObjectType, Field, ID } from "type-graphql";
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from "typeorm";
+import bcrypt from "bcryptjs";
+import { ObjectType, Field, ID, Root } from "type-graphql";
+import {
+  BaseEntity,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BeforeInsert
+} from "typeorm";
 
 @ObjectType()
 @Entity()
-export class User {
+export class User extends BaseEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
 
   @Field()
-  @Column("varchar", { length: 255 })
+  @Column()
+  firstName: string;
+
+  @Field()
+  @Column()
+  lastName: string;
+
+  @Field()
+  @Column("varchar", { unique: true })
   email: string;
 
-  @Field()
   @Column("text")
   password: string;
 
   @Field()
-  @Column("bool")
-  confirmed: boolean;
+  name(@Root() paerent: User): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
 
   @BeforeInsert()
   async hashPasswordBeforeInsert() {

@@ -9,12 +9,14 @@ import { buildSchema, formatArgumentValidationError } from "type-graphql";
 import { redis } from "./redis";
 
 import { RegisterResolver } from "./modules/user/Register";
+import { LoginResolver } from "./modules/user/Login";
+import { MeResolver } from "./modules/user/Me";
 
 const startServer = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [RegisterResolver]
+    resolvers: [RegisterResolver, LoginResolver, MeResolver]
   });
 
   const apolloServer = new ApolloServer({

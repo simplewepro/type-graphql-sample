@@ -12,8 +12,8 @@ import {
 @Entity()
 export class User extends BaseEntity {
   @Field(type => ID)
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Field()
   @Column()

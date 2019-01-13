@@ -8,15 +8,14 @@ import { createConnection } from "typeorm";
 import { buildSchema, formatArgumentValidationError } from "type-graphql";
 import { redis } from "./redis";
 
-import { RegisterResolver } from "./modules/user/Register";
-import { LoginResolver } from "./modules/user/Login";
-import { MeResolver } from "./modules/user/Me";
-
 const startServer = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [RegisterResolver, LoginResolver, MeResolver]
+    resolvers: [__dirname + "/modules/**/*.resolver.ts"],
+    authChecker: ({ context: { req } }) => {
+      return !!req.session.userId;
+    }
   });
 
   const apolloServer = new ApolloServer({
@@ -56,7 +55,7 @@ const startServer = async () => {
   apolloServer.applyMiddleware({ app });
 
   app.listen(4000, () =>
-    console.log("server started on http://localhost:4000/graphql")
+    console.log("🚀 server started on http://localhost:4000/graphql")
   );
 };
 

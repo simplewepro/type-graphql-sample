@@ -30,6 +30,9 @@ export class User extends BaseEntity {
   @Column("text")
   password: string;
 
+  @Column("bool", { default: false })
+  confirmed: boolean;
+
   @Field()
   name(@Root() paerent: User): string {
     return `${this.firstName} ${this.lastName}`;

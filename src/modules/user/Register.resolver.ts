@@ -1,6 +1,8 @@
 import { Resolver, Query, Mutation, Arg, UseMiddleware } from "type-graphql";
 import { User } from "../../entity/User";
 import { RegisterInput } from "./register/RegisterInput";
+import { sendEmail } from "../utils/sendEmail";
+import { createConfirmationUrl } from "../utils/createConfirmationUrl";
 // import { isAuth, logger } from "../middleware";
 
 @Resolver()
@@ -12,19 +14,21 @@ export class RegisterResolver {
   }
 
   @Mutation(returns => User)
-  register(@Arg("data")
+  async register(@Arg("data")
   {
     firstName,
     lastName,
     email,
     password
   }: RegisterInput): Promise<User> {
-    const user = User.create({
+    const user = await User.create({
       firstName,
       lastName,
       email,
       password
     }).save();
+
+    await sendEmail(email, createConfirmationUrl(user.id));
 
     return user;
   }

@@ -5,8 +5,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  BeforeInsert
+  BeforeInsert,
+  BeforeUpdate
 } from "typeorm";
+import { Min } from "class-validator";
 
 @ObjectType()
 @Entity()
@@ -28,18 +30,19 @@ export class User extends BaseEntity {
   email: string;
 
   @Column("text")
+  @Min(5)
   password: string;
 
   @Column("bool", { default: false })
   confirmed: boolean;
 
   @Field()
-  name(@Root() paerent: User): string {
+  name(@Root() parent: User): string {
     return `${this.firstName} ${this.lastName}`;
   }
 
   @BeforeInsert()
-  async hashPasswordBeforeInsert() {
+  async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);
   }
 }

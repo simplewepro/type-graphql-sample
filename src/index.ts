@@ -12,7 +12,7 @@ const startServer = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [__dirname + "/modules/**/*.resolver.ts"],
+    resolvers: [__dirname + "/modules/**/*.ts"],
     authChecker: ({ context: { req } }) => {
       return !!req.session.userId;
     }

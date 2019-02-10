@@ -14,17 +14,17 @@ export class LoginResolver {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      return null;
+      throw new Error("Wrong email");
     }
 
     const valid = await bcrypt.compare(password, user.password);
 
     if (!valid) {
-      return null;
+      throw new Error("Wrong password");
     }
 
     if (!user.confirmed) {
-      return null;
+      throw new Error("User is not confirmed");
     }
 
     ctx.req.session!.userId = user.id;

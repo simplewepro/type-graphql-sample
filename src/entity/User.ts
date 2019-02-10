@@ -5,8 +5,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  BeforeInsert,
-  BeforeUpdate
+  BeforeInsert
 } from "typeorm";
 import { Min } from "class-validator";
 

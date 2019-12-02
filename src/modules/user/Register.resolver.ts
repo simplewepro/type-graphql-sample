@@ -14,13 +14,10 @@ export class RegisterResolver {
   }
 
   @Mutation(returns => User)
-  async register(@Arg("data")
-  {
-    firstName,
-    lastName,
-    email,
-    password
-  }: RegisterInput): Promise<User> {
+  async register(
+    @Arg("data")
+    { firstName, lastName, email, password }: RegisterInput
+  ): Promise<User> {
     const user = await User.create({
       firstName,
       lastName,
